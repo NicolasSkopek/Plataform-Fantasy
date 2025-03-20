@@ -63,17 +63,17 @@ class Knight(Obj):
 
     def events(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_d:
+            if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 self.walking_right = True
-            elif event.key == pygame.K_a:
+            elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                 self.walking_left = True
             elif event.key == pygame.K_SPACE:
                 self.jumping = True
                 self.vel *= -1.5
         elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_d:
+            if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 self.walking_right = False
-            elif event.key == pygame.K_a:
+            elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                 self.walking_left = False
             elif event.key == pygame.K_SPACE:
                 self.jumping = False
