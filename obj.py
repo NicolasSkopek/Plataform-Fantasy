@@ -21,6 +21,9 @@ class Knight(Obj):
         self.vel = 6
         self.grav = 1
 
+        self.ticks = 0
+        self.img = 0
+
         self.walking_right = False
         self.walking_left = False
         self.jumping = False
@@ -50,6 +53,7 @@ class Knight(Obj):
             elif event.key == pygame.K_a:
                 self.walking_left = True
             elif event.key == pygame.K_SPACE:
+                self.jumping = True
                 self.vel *= -1
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
@@ -57,14 +61,39 @@ class Knight(Obj):
             elif event.key == pygame.K_a:
                 self.walking_left = False
             elif event.key == pygame.K_SPACE:
+                self.jumping = False
                 self.vel *= -1
 
     def movement(self):
+        if self.jumping:
+            self.anim(5, 5, "jump")
         if self.walking_right:
             self.rect.x += 8
+            if not self.jumping:
+                self.anim(5, 6, "walk")
+                self.image = pygame.transform.flip(self.image, False, False)
         elif self.walking_left:
             self.rect.x -= 8
+            if not self.jumping:
+                self.anim(5, 6, "walk")
+                self.image = pygame.transform.flip(self.image, True, False)
+        else:
+            self.anim(6, 3, "idle")
 
+
+    def anim(self, speed, frames, name):
+        self.ticks += 1
+        if self.ticks >= speed:
+            self.ticks = 0
+            self.img += 1
+        if self.img > frames:
+            self.img = 0
+
+        self.image = pygame.image.load("assets/knight/" + name + str(self.img) + ".PNG")
+        if name != "jump":
+            self.image = pygame.transform.scale(self.image, (41*2, 67*2))
+        else:
+            self.image = pygame.transform.scale(self.image, (72 * 2, 67 * 2))
 
 
 
