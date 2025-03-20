@@ -18,11 +18,19 @@ class Knight(Obj):
     def __init__(self, image, x, y, width = None, height = None, *groups):
         super().__init__(image, x, y, width, height, *groups)
 
+        self.hit_sound = pygame.mixer.Sound("assets/sounds/hit.mp3")
+        self.kill_sound = pygame.mixer.Sound("assets/sounds/kill.mp3")
+        self.point_sound = pygame.mixer.Sound("assets/sounds/point.mp3")
+
+
         self.vel = 6
         self.grav = 1
 
         self.ticks = 0
         self.img = 0
+
+        self.pts = 0
+        self.hp = 3
 
         self.walking_right = False
         self.walking_left = False
@@ -36,15 +44,22 @@ class Knight(Obj):
         self.vel += self.grav
         self.rect.y += self.vel
 
-        if self.vel >= 20:
-            self.vel = 20
+        if self.vel >= 10:
+            self.vel = 10
 
-    def collisions(self, group, kill):
+    def collisions(self, group, kill, name):
         col = pygame.sprite.spritecollide(self, group, kill)
 
-        if col:
+        if col and name == "platform":
             self.rect.bottom = col[0].rect.top
-
+        if col and name == "crystal":
+            self.point_sound.play()
+            self.pts += 1
+        if col and name == "enemy":
+            if self.rect.y + 90 < col[0].rect.top:
+                self.kill_sound.play()
+                self.vel *= -1
+                col[0].kill()
 
     def events(self, event):
         if event.type == pygame.KEYDOWN:
@@ -54,7 +69,7 @@ class Knight(Obj):
                 self.walking_left = True
             elif event.key == pygame.K_SPACE:
                 self.jumping = True
-                self.vel *= -1
+                self.vel *= -1.4
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
                 self.walking_right = False
@@ -66,7 +81,12 @@ class Knight(Obj):
 
     def movement(self):
         if self.jumping:
-            self.anim(5, 5, "jump")
+            if self.walking_right:
+                self.anim(5, 5, "jump")
+                self.image = pygame.transform.flip(self.image, False, False)
+            if self.walking_left:
+                self.anim(5, 5, "jump")
+                self.image = pygame.transform.flip(self.image, True, False)
         if self.walking_right:
             self.rect.x += 8
             if not self.jumping:

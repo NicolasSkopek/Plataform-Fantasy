@@ -40,4 +40,6 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        self.player.collisions(self.all_platforms, False)
+        self.player.collisions(self.all_platforms, False, "platform")
+        self.player.collisions(self.all_crystals, True, "crystal")
+        self.player.collisions(self.all_enemies, False, "enemy")
