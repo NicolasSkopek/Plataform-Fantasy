@@ -10,10 +10,9 @@ class Game:
         self.all_crystals = pygame.sprite.Group()
         self.all_enemies = pygame.sprite.Group()
 
+        self.change_scene = False
 
         self.bg = Obj("assets/test_bg.png", 0, 0, 576*2.3, 324*2.3, self.all_sprites)
-
-        # self.campfire = Obj("assets/campfire.png", 970, 390, 463 / 4, 435 / 4, self.all_sprites)
 
         self.tree0 = Obj("assets/tree0.png", 40, 225, 48*5.5, 48*5.5, self.all_sprites)
         self.tree1 = Obj("assets/tree1.png", 380, 225, 48 * 5.5, 48 * 5.5, self.all_sprites)
@@ -28,9 +27,9 @@ class Game:
         self.crystal1 = Obj("assets/crystal.png", 650, 320, 64, 64, self.all_sprites, self.all_crystals)
         self.crystal2 = Obj("assets/crystal.png", 1100, 320, 64, 64, self.all_sprites, self.all_crystals)
 
-        self.enemy0 = Enemy("assets/enemy0.png", 530, 405, 36*2, 38*2, self.all_sprites, self.all_enemies)
-        self.enemy1 = Enemy("assets/enemy0.png", 880, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
-        self.enemy2 = Enemy("assets/enemy0.png", 1100, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
+        self.enemy0 = Enemy("assets/enemy0.png", 430, 405, 36*2, 38*2, self.all_sprites, self.all_enemies)
+        self.enemy1 = Enemy("assets/enemy0.png", 630, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
+        self.enemy2 = Enemy("assets/enemy0.png", 950, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
 
         self.player = Knight("assets/knight/idle0.png", 25, 350, 41*2, 67*2, self.all_sprites)
 
@@ -56,6 +55,8 @@ class Game:
         self.player.collisions(self.all_crystals, True, "crystal")
         self.player.collisions(self.all_enemies, False, "enemy")
         self.HUD()
+        self.gameover()
+        self.win()
 
     def HUD(self):
         for i in range(3):
@@ -69,3 +70,23 @@ class Game:
                 self.life_icons[i].image = pygame.image.load("assets/icon_head.png")
             else:
                 self.life_icons[i].image = pygame.image.load("assets/dead_head.png")
+
+    def gameover(self):
+        if self.player.hp == 0:
+            self.change_scene = True
+
+    def win(self):
+        if self.player.pts == 3:
+            self.change_scene = True
+
+    def restart(self):
+        self.crystal0 = Obj("assets/crystal.png", 420, 320, 64, 64, self.all_sprites, self.all_crystals)
+        self.crystal1 = Obj("assets/crystal.png", 650, 320, 64, 64, self.all_sprites, self.all_crystals)
+        self.crystal2 = Obj("assets/crystal.png", 1100, 320, 64, 64, self.all_sprites, self.all_crystals)
+
+        self.enemy0 = Enemy("assets/enemy0.png", 430, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
+        self.enemy1 = Enemy("assets/enemy0.png", 630, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
+        self.enemy2 = Enemy("assets/enemy0.png", 950, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
+
+        self.player.rect.x = 25
+        self.player.rect.y = 350

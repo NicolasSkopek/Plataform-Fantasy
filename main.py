@@ -1,4 +1,5 @@
 from game import Game
+from menu import *
 import pygame
 
 pygame.mixer.init()
@@ -16,22 +17,43 @@ class Main:
         self.loop = True
         self.fps = pygame.time.Clock()
 
+        self.menu = Menu("assets/menu.png")
         self.game = Game()
+        self.restart = Restart("assets/restart.png")
 
 
     def draw(self):
-        self.game.draw(self.window)
-        self.game.update()
+        if not self.menu.change_scene:
+            self.menu.draw(self.window)
+        elif not self.game.change_scene:
+            if not pygame.mixer_music.get_busy():
+                pygame.mixer_music.play(-1)
+                pygame.mixer.music.set_volume(0.5)
+            self.game.draw(self.window)
+            self.game.update()
+        elif not self.restart.change_scene:
+            pygame.mixer_music.stop()
+            self.restart.draw(self.window)
+        else:
+            self.menu.change_scene = False
+            self.game.change_scene = False
+            self.restart.change_scene = False
+            self.game.player.hp = 3
+            self.game.player.pts = 0
+            self.game.restart()
 
     def events(self):
         for events in pygame.event.get():
             if events.type == pygame.QUIT:
                 self.loop = False
-            self.game.player.events(events)
+            if not self.menu.change_scene:
+                self.menu.events(events)
+            elif not self.game.change_scene:
+                self.game.player.events(events)
+            else:
+                self.restart.events(events)
 
     def update(self):
-        pygame.mixer_music.play(-1)
-        pygame.mixer.music.set_volume(0.5)
         while self.loop:
             self.draw()
             self.events()
