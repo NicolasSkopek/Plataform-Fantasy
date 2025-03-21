@@ -80,10 +80,16 @@ class Game:
             self.change_scene = True
 
     def restart(self):
+        self.crystal0.kill()
+        self.crystal1.kill()
+        self.crystal2.kill()
         self.crystal0 = Obj("assets/crystal.png", 420, 320, 64, 64, self.all_sprites, self.all_crystals)
         self.crystal1 = Obj("assets/crystal.png", 650, 320, 64, 64, self.all_sprites, self.all_crystals)
         self.crystal2 = Obj("assets/crystal.png", 1100, 320, 64, 64, self.all_sprites, self.all_crystals)
 
+        self.enemy0.kill()
+        self.enemy1.kill()
+        self.enemy2.kill()
         self.enemy0 = Enemy("assets/enemy0.png", 430, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
         self.enemy1 = Enemy("assets/enemy0.png", 630, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
         self.enemy2 = Enemy("assets/enemy0.png", 950, 405, 36 * 2, 38 * 2, self.all_sprites, self.all_enemies)
